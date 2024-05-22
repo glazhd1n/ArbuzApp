@@ -14,7 +14,15 @@ class ProductViewModel: ObservableObject {
         // Замените этот мок-объект реальными данными из запроса
         products = [
             Product(image: "chicken", name: "Product 1", price: 1000.0, minQuantity: 1),
-            Product(image: "chicken", name: "Product 2", price: 2000.0, minQuantity: 1)
+            Product(image: "chicken", name: "Product 2", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Producagkjhf dhhsgjk hdsgj khdjg sdjk dfgskgt 3", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 4", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 5", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 6", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 7", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 8", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 9", price: 2000.0, minQuantity: 1),
+            Product(image: "chicken", name: "Product 10", price: 2000.0, minQuantity: 1),
         ]
     }
 

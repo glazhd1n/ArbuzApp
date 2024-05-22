@@ -6,4 +6,5 @@ struct Product: Identifiable {
     let name: String
     let price: Double
     let minQuantity: Int
+    var isLiked: Bool = false
 }
