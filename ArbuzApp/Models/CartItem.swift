@@ -1,10 +1,3 @@
-//
-//  CartItem.swift
-//  ArbuzApp
-//
-//  Created by Сабир Глаждин on 20.05.2024.
-//
-
 import Foundation
 
 struct CartItem: Identifiable {

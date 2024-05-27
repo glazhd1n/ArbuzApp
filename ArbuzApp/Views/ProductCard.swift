@@ -1,83 +1,25 @@
-//import SwiftUI
-//
-//struct ProductCard: View {
-//    @EnvironmentObject var viewModel: ProductViewModel
-//    let product: Product
-//    @State private var isLiked = false
-//
-//    var body: some View {
-//        VStack {
-//            Image(product.image)
-//                .resizable()
-//                .aspectRatio(contentMode: .fit)
-//                .frame(height: 200)
-//                .cornerRadius(10)
-//                .overlay(
-//                    VStack {
-//                        Spacer()
-//                        HStack {
-//                            Spacer()
-//                            Button(action: {
-//                                isLiked.toggle()
-//                            }) {
-//                                Image(systemName: isLiked ? "heart.fill" : "heart")
-//                                    .foregroundColor(isLiked ? .red : .gray)
-//                                    .padding()
-//                            }
-//                        }
-//                    }
-//                )
-//
-//            Text(product.name)
-//                .font(.headline)
-//                .padding(.top, 10)
-//
-//            HStack {
-//                Text("\(product.price, specifier: "%.2f") ₸ за единицу")
-//                Spacer()
-//            }.padding([.leading, .trailing], 10)
-//
-//            Button(action: {
-//                viewModel.addToCart(product: product)
-//            }) {
-//                Text("\(product.price, specifier: "%.2f") ₸")
-//                    .padding()
-//                    .background(Color.blue)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(5)
-//            }
-//            .padding([.leading, .trailing, .bottom], 10)
-//        }
-//        .background(Color.white)
-//        .cornerRadius(10)
-//        .shadow(radius: 5)
-//        .padding()
-//    }
-//}
-
-
 import SwiftUI
 
 struct ProductCard: View {
-    @EnvironmentObject var viewModel: ProductViewModel
-    var product: Product
+    @EnvironmentObject var viewModel: CartViewModel
+    @EnvironmentObject var productRepository: ProductRepository
+    @State var product: Product
 
     var body: some View {
         VStack {
             Image(product.image)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-//                .frame(height: 100)
                 .cornerRadius(10)
             VStack {
                 
                 HStack {
                     Text(product.name)
                         .font(.headline)
-                        .lineLimit(2)
+                        .lineLimit(1)
                     Spacer()
                     Button(action: {
-                        product.isLiked.toggle()
+                        productRepository.toggleFavorite(for: product)
                     }) {
                         Image(systemName: product.isLiked ? "heart.fill" : "heart")
                             .foregroundColor(product.isLiked ? .red : .gray)
@@ -97,20 +39,50 @@ struct ProductCard: View {
             }
 
             HStack {
-                Spacer()
-                Button(action: {
-                    viewModel.addToCart(product: product)
-                }) {
-                    Image(systemName: "plus")
-                        .foregroundColor(.green)
-                        .font(.title2)
+                if(viewModel.getQuantity(for: product) == 0) {
+                    Spacer()
+                    Button(action: {
+                        viewModel.addProductToCart(product)
+                    }) {
+                        Image(systemName: "plus")
+                            .foregroundColor(.green)
+                            .font(.title2)
+                    }
+                    .padding(.horizontal)
+                } else {
+                    Button(action: {
+                        viewModel.removeProductFromCart(product)
+                    }) {
+                        Image(systemName: "minus")
+                            .foregroundColor(.white)
+                            .font(.title2)
+                    }
+                    .padding(.horizontal)
+                    Spacer()
+                    Text("\(viewModel.getQuantity(for: product))")
+                        .lineLimit(1)
+                        .foregroundColor(.white)
+                    Spacer()
+                    Button(action: {
+                        viewModel.addProductToCart(product)
+                    }) {
+                        Image(systemName: "plus")
+                            .foregroundColor(.white)
+                            .font(.title2)
+                    }
+                    .padding(.horizontal)
                 }
-                .padding(.horizontal)
             }
             .padding(.vertical, 5)
-            .background(Color.gray.opacity(0.1)) // Серый фон для всей HStack
+            .background(viewModel.getQuantity(for: product) == 0 ? Color.gray.opacity(0.1) : Color.green)
             .cornerRadius(25)
         }
         .padding()
+        .onAppear {
+            self.product = productRepository.products.first(where: { $0.id == product.id }) ?? product
+        }
+        .onReceive(productRepository.objectWillChange) { _ in
+            self.product = productRepository.products.first(where: { $0.id == product.id }) ?? product
+        }
     }
 }
